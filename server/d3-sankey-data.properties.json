@@ -1,0 +1,68 @@
+[
+  {
+    "name": "table",
+    "label": "Table",
+    "description": "Table to query, e.g. 'incident'.",
+    "fieldType": "string",
+    "mandatory": true,
+    "defaultValue": "incident"
+  },
+  {
+    "name": "filter",
+    "label": "Filter (encoded query)",
+    "description": "Optional encoded query to scope the rows, e.g. 'active=true^priority<=2'.",
+    "fieldType": "string",
+    "defaultValue": ""
+  },
+  {
+    "name": "sourceField",
+    "label": "Source field",
+    "description": "Field whose value becomes the SOURCE node of each flow, e.g. 'contact_type' or 'state'.",
+    "fieldType": "string",
+    "mandatory": true,
+    "defaultValue": "contact_type"
+  },
+  {
+    "name": "targetField",
+    "label": "Target field",
+    "description": "Field whose value becomes the TARGET node of each flow, e.g. 'state' or 'assignment_group'.",
+    "fieldType": "string",
+    "mandatory": true,
+    "defaultValue": "state"
+  },
+  {
+    "name": "metric",
+    "label": "Metric",
+    "description": "Aggregation for the link value: count | sum | avg | min | max. Default 'count'.",
+    "fieldType": "string",
+    "defaultValue": "count"
+  },
+  {
+    "name": "valueField",
+    "label": "Value field",
+    "description": "Numeric field to aggregate (required when metric is not 'count'), e.g. 'business_duration'.",
+    "fieldType": "string",
+    "defaultValue": ""
+  },
+  {
+    "name": "useDisplayValue",
+    "label": "Use display values for labels",
+    "description": "Group/label nodes by display value (readable) instead of raw value.",
+    "fieldType": "boolean",
+    "defaultValue": true
+  },
+  {
+    "name": "colors",
+    "label": "Colors (JSON)",
+    "description": "Optional per-node colors: a JSON array [\"#2E93fA\",\"#66DA26\"] applied by node order, or a map {\"Resolved\":\"#66DA26\"} keyed by node name.",
+    "fieldType": "string",
+    "defaultValue": ""
+  },
+  {
+    "name": "prefixStages",
+    "label": "Prefix stages (split shared nodes)",
+    "description": "When ON, a value appearing as both a source and a target is split into two nodes ('From: X' and 'To: X'), preventing a self-referential collapse. When OFF (default), matching source/target values share one node (natural multi-stage flow).",
+    "fieldType": "boolean",
+    "defaultValue": false
+  }
+]

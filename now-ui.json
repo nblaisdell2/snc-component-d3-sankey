@@ -1,0 +1,456 @@
+{
+  "components": {
+    "x-1295779-sankey-chart-uic": {
+      "innerComponents": [],
+      "uiBuilder": {
+        "associatedTypes": [
+          "global.core",
+          "global.landing-page"
+        ],
+        "label": "D3 Sankey Diagram",
+        "tileIcon": "./tile-icon/generic-tile-icon.svg",
+        "description": "A configurable Sankey flow diagram rendered with D3.js and the d3-sankey plugin. Nodes are bars; links are proportional curved ribbons. Color links by source/target/gradient, align and sort nodes, highlight connected flows on hover, and hook click/hover events.",
+        "category": "primitives"
+      },
+      "properties": [
+        {
+          "name": "data",
+          "label": "Data · Graph data",
+          "description": "A graph object { nodes: [ { name, color? } ], links: [ { source, target, value } ] }. source/target may be a node NAME (string) or a node INDEX (number). Bind to a data resource or leave empty to show built-in sample data.",
+          "fieldType": "json"
+        },
+        {
+          "name": "chartTitle",
+          "label": "Header & border · Title",
+          "description": "Title rendered above the diagram. Leave blank to hide.",
+          "fieldType": "string",
+          "defaultValue": "Ticket Lifecycle Flow"
+        },
+        {
+          "name": "titleFontSize",
+          "label": "Header & border · Title font size",
+          "description": "Font size of the title, in pixels.",
+          "fieldType": "number",
+          "defaultValue": 18
+        },
+        {
+          "name": "titleColor",
+          "label": "Header & border · Title color",
+          "description": "Text color of the title.",
+          "fieldType": "string",
+          "defaultValue": "#374151"
+        },
+        {
+          "name": "componentWidth",
+          "label": "Header & border · Width",
+          "description": "Outer width of the whole widget. CSS length, e.g. \"50%\", \"640px\". A bare number is treated as pixels.",
+          "fieldType": "string",
+          "defaultValue": "100%"
+        },
+        {
+          "name": "componentPadding",
+          "label": "Header & border · Padding",
+          "description": "Padding around the whole widget. CSS length, e.g. \"12px\", \"1rem\". A bare number is treated as pixels.",
+          "fieldType": "string",
+          "defaultValue": "12px"
+        },
+        {
+          "name": "backgroundColor",
+          "label": "Header & border · Background color",
+          "description": "Diagram background. CSS color or \"transparent\".",
+          "fieldType": "string",
+          "defaultValue": "transparent"
+        },
+        {
+          "name": "borderColor",
+          "label": "Header & border · Border color",
+          "description": "Border color of the widget. Leave blank for no border.",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        {
+          "name": "borderWidth",
+          "label": "Header & border · Border width",
+          "description": "Border thickness in pixels. 0 = no border.",
+          "fieldType": "number",
+          "defaultValue": 0
+        },
+        {
+          "name": "borderRadius",
+          "label": "Header & border · Border radius",
+          "description": "Rounded corners of the widget, in pixels.",
+          "fieldType": "number",
+          "defaultValue": 0
+        },
+        {
+          "name": "chartHeight",
+          "label": "Display · Chart height (px)",
+          "description": "Height of the diagram in pixels.",
+          "fieldType": "number",
+          "defaultValue": 420
+        },
+        {
+          "name": "animate",
+          "label": "Display · Animate",
+          "description": "Animate nodes and links growing in on first render and on data change.",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        {
+          "name": "animationDuration",
+          "label": "Display · Animation duration (ms)",
+          "description": "Duration of the grow-in animation in milliseconds.",
+          "fieldType": "number",
+          "defaultValue": 800
+        },
+        {
+          "name": "animationEasing",
+          "label": "Display · Animation easing",
+          "description": "Easing curve for the grow-in animation.",
+          "fieldType": "choice",
+          "defaultValue": "cubicOut",
+          "typeMetadata": {
+            "variant": "dropdown",
+            "choices": [
+              { "label": "Linear", "value": "linear" },
+              { "label": "Cubic out", "value": "cubicOut" },
+              { "label": "Cubic in-out", "value": "cubicInOut" },
+              { "label": "Quad out", "value": "quadOut" },
+              { "label": "Exp out", "value": "expOut" },
+              { "label": "Back out", "value": "backOut" },
+              { "label": "Bounce out", "value": "bounceOut" },
+              { "label": "Elastic out", "value": "elasticOut" }
+            ]
+          }
+        },
+        {
+          "name": "fontFamily",
+          "label": "Display · Base font family",
+          "description": "CSS font-family for diagram text that doesn't have its own family set. Blank = inherit from the page.",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        {
+          "name": "dropShadow",
+          "label": "Display · Drop shadow",
+          "description": "Apply a soft drop shadow to the node bars.",
+          "fieldType": "boolean",
+          "defaultValue": false
+        },
+        {
+          "name": "shadowColor",
+          "label": "Display · Shadow color (when drop shadow on)",
+          "description": "Color of the drop shadow (supports rgba).",
+          "fieldType": "string",
+          "defaultValue": "rgba(0,0,0,0.25)"
+        },
+        {
+          "name": "shadowBlur",
+          "label": "Display · Shadow blur (when drop shadow on)",
+          "description": "Blur radius of the drop shadow, in pixels.",
+          "fieldType": "number",
+          "defaultValue": 4
+        },
+        {
+          "name": "nodeAlign",
+          "label": "Nodes · Alignment",
+          "description": "How node columns are positioned horizontally. Justify spreads sinks to the right edge; Left/Right/Center anchor nodes per d3-sankey's alignment functions.",
+          "fieldType": "choice",
+          "defaultValue": "justify",
+          "typeMetadata": {
+            "variant": "dropdown",
+            "choices": [
+              { "label": "Justify", "value": "justify" },
+              { "label": "Left", "value": "left" },
+              { "label": "Right", "value": "right" },
+              { "label": "Center", "value": "center" }
+            ]
+          }
+        },
+        {
+          "name": "nodeWidth",
+          "label": "Nodes · Width (px)",
+          "description": "Thickness of each node bar, in pixels.",
+          "fieldType": "number",
+          "defaultValue": 16
+        },
+        {
+          "name": "nodePadding",
+          "label": "Nodes · Vertical padding (px)",
+          "description": "Vertical gap between stacked nodes in the same column, in pixels.",
+          "fieldType": "number",
+          "defaultValue": 12
+        },
+        {
+          "name": "nodeCornerRadius",
+          "label": "Nodes · Corner radius (px)",
+          "description": "Rounded corners on the node bars, in pixels. 0 = square.",
+          "fieldType": "number",
+          "defaultValue": 2
+        },
+        {
+          "name": "nodeStroke",
+          "label": "Nodes · Border color",
+          "description": "Outline color of the node bars. Blank = no outline.",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        {
+          "name": "nodeStrokeWidth",
+          "label": "Nodes · Border width (px)",
+          "description": "Outline thickness of the node bars, in pixels. 0 = no outline.",
+          "fieldType": "number",
+          "defaultValue": 0
+        },
+        {
+          "name": "nodeSort",
+          "label": "Nodes · Vertical sort",
+          "description": "Order of nodes within a column. Auto = d3-sankey's default (minimize crossings); None = input order; Ascending/Descending = by node total throughflow.",
+          "fieldType": "choice",
+          "defaultValue": "auto",
+          "typeMetadata": {
+            "variant": "dropdown",
+            "choices": [
+              { "label": "Auto (minimize crossings)", "value": "auto" },
+              { "label": "None (input order)", "value": "none" },
+              { "label": "Ascending (by value)", "value": "ascending" },
+              { "label": "Descending (by value)", "value": "descending" }
+            ]
+          }
+        },
+        {
+          "name": "linkColorMode",
+          "label": "Links · Color mode",
+          "description": "How ribbons are colored. Source = source node's color; Target = target node's color; Gradient = fades from source color to target color; Static = a single color for all links.",
+          "fieldType": "choice",
+          "defaultValue": "gradient",
+          "typeMetadata": {
+            "variant": "dropdown",
+            "choices": [
+              { "label": "Source color", "value": "source" },
+              { "label": "Target color", "value": "target" },
+              { "label": "Gradient (source to target)", "value": "gradient" },
+              { "label": "Static color", "value": "static" }
+            ]
+          }
+        },
+        {
+          "name": "linkStaticColor",
+          "label": "Links · Static color (when mode = Static)",
+          "description": "Color used for all ribbons when Color mode is Static.",
+          "fieldType": "string",
+          "defaultValue": "#94a3b8"
+        },
+        {
+          "name": "linkOpacity",
+          "label": "Links · Opacity",
+          "description": "Opacity of the ribbons from 0 (transparent) to 1 (solid).",
+          "fieldType": "number",
+          "defaultValue": 0.45
+        },
+        {
+          "name": "linkHoverOpacity",
+          "label": "Links · Hover opacity",
+          "description": "Opacity a ribbon rises to on hover (0 to 1).",
+          "fieldType": "number",
+          "defaultValue": 0.75
+        },
+        {
+          "name": "linkCurvature",
+          "label": "Links · Curvature",
+          "description": "Curviness of the ribbons from 0 (nearly straight) to 1 (strongly S-curved).",
+          "fieldType": "number",
+          "defaultValue": 0.5
+        },
+        {
+          "name": "linkHover",
+          "label": "Links · Highlight whole path on hover",
+          "description": "When hovering a ribbon, brighten its entire connected source-and-target nodes too.",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        {
+          "name": "hoverHighlight",
+          "label": "Links · Highlight connected on node hover",
+          "description": "When hovering a node, emphasize the links and nodes connected to it.",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        {
+          "name": "hoverDimOthers",
+          "label": "Links · Dim others on hover",
+          "description": "Fade unrelated nodes/links while hovering a node or link, so the active flow stands out.",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        {
+          "name": "useSeriesColors",
+          "label": "Colors · Use node colors",
+          "description": "Use each node's own 'color' field when present. Falls back to the scheme/palette otherwise.",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        {
+          "name": "colorScheme",
+          "label": "Colors · Color scheme",
+          "description": "Pick a built-in D3 categorical scheme to color the nodes, or Custom to use the Color palette below. Per-node colors in the data still win when 'Use node colors' is on.",
+          "fieldType": "choice",
+          "defaultValue": "tableau10",
+          "typeMetadata": {
+            "variant": "dropdown",
+            "choices": [
+              { "label": "Custom (use palette)", "value": "custom" },
+              { "label": "Category10", "value": "category10" },
+              { "label": "Tableau10", "value": "tableau10" },
+              { "label": "Set2", "value": "set2" },
+              { "label": "Set3", "value": "set3" },
+              { "label": "Paired", "value": "paired" },
+              { "label": "Dark2", "value": "dark2" },
+              { "label": "Pastel1", "value": "pastel1" },
+              { "label": "Accent", "value": "accent" }
+            ]
+          }
+        },
+        {
+          "name": "colorPalette",
+          "label": "Colors · Color palette",
+          "description": "JSON array of CSS colors cycled across nodes when 'Use node colors' is off and Color scheme is Custom, e.g. [\"#2E93fA\",\"#66DA26\"].",
+          "fieldType": "json"
+        },
+        {
+          "name": "showNodeLabels",
+          "label": "Labels · Show node labels",
+          "description": "Draw a text label beside each node.",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        {
+          "name": "nodeLabelPosition",
+          "label": "Labels · Position",
+          "description": "Where labels sit relative to the node. Outside = left of leftmost / right of others; Inside = inset within the column; Auto = outside-aware placement that keeps edge labels in view.",
+          "fieldType": "choice",
+          "defaultValue": "auto",
+          "typeMetadata": {
+            "variant": "dropdown",
+            "choices": [
+              { "label": "Auto", "value": "auto" },
+              { "label": "Outside", "value": "outside" },
+              { "label": "Inside", "value": "inside" }
+            ]
+          }
+        },
+        {
+          "name": "nodeLabelFontSize",
+          "label": "Labels · Font size (px)",
+          "description": "Font size of the node labels, in pixels.",
+          "fieldType": "number",
+          "defaultValue": 12
+        },
+        {
+          "name": "nodeLabelColor",
+          "label": "Labels · Color",
+          "description": "Text color of the node labels.",
+          "fieldType": "string",
+          "defaultValue": "#374151"
+        },
+        {
+          "name": "showNodeValues",
+          "label": "Labels · Show node totals",
+          "description": "Append each node's total throughflow value to its label.",
+          "fieldType": "boolean",
+          "defaultValue": false
+        },
+        {
+          "name": "valueFormat",
+          "label": "Labels · Value format",
+          "description": "D3 number format specifier for node totals and link tooltip values (e.g. \".0f\", \",.0f\", \"$,.0f\", \".2s\"). Blank = default.",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        {
+          "name": "showTooltip",
+          "label": "Tooltip · Show tooltip",
+          "description": "Show a hover tooltip over nodes and links.",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        {
+          "name": "tooltipTemplate",
+          "label": "Tooltip · Node template",
+          "description": "Tooltip content for a NODE (light HTML allowed). Tokens: {name}, {value} (raw total), {formattedValue}, {swatch} (a colored dot matching the node), {color}. Interpolated values are HTML-escaped. Links use a built-in 'source to target: value' tooltip.",
+          "fieldType": "string",
+          "defaultValue": "<strong>{name}</strong><br/>{swatch}Total: {formattedValue}"
+        },
+        {
+          "name": "tooltipFollowCursor",
+          "label": "Tooltip · Follow cursor",
+          "description": "Tooltip follows the pointer. Either way it's clamped within the chart bounds.",
+          "fieldType": "boolean",
+          "defaultValue": true
+        },
+        {
+          "name": "tooltipBackground",
+          "label": "Tooltip · Background color",
+          "description": "Tooltip background (CSS color, supports rgba).",
+          "fieldType": "string",
+          "defaultValue": "rgba(17,24,39,0.92)"
+        },
+        {
+          "name": "tooltipTextColor",
+          "label": "Tooltip · Text color",
+          "description": "Tooltip text color.",
+          "fieldType": "string",
+          "defaultValue": "#ffffff"
+        },
+        {
+          "name": "tooltipFontSize",
+          "label": "Tooltip · Font size",
+          "description": "Tooltip font size, in pixels.",
+          "fieldType": "number",
+          "defaultValue": 12
+        }
+      ],
+      "actions": [
+        {
+          "name": "CHART_CLICKED",
+          "label": "Chart clicked",
+          "description": "Fired when the user clicks the diagram background (not a node or link).",
+          "payload": [
+            { "name": "nodeCount", "label": "Number of nodes", "description": "How many nodes are rendered." },
+            { "name": "linkCount", "label": "Number of links", "description": "How many links are rendered." }
+          ]
+        },
+        {
+          "name": "NODE_CLICKED",
+          "label": "Node clicked",
+          "description": "Fired when the user clicks a node bar. Use to drill into that stage.",
+          "payload": [
+            { "name": "name", "label": "Node name", "description": "Name of the clicked node." },
+            { "name": "value", "label": "Value", "description": "Total throughflow of the node." },
+            { "name": "index", "label": "Node index", "description": "Zero-based index of the node." }
+          ]
+        },
+        {
+          "name": "LINK_CLICKED",
+          "label": "Link clicked",
+          "description": "Fired when the user clicks a flow ribbon. Use to drill into that flow.",
+          "payload": [
+            { "name": "source", "label": "Source node", "description": "Name of the source node." },
+            { "name": "target", "label": "Target node", "description": "Name of the target node." },
+            { "name": "value", "label": "Value", "description": "Value of the flow." }
+          ]
+        },
+        {
+          "name": "NODE_HOVERED",
+          "label": "Node hovered",
+          "description": "Fired when the user hovers a node. Useful for syncing external details panels.",
+          "payload": [
+            { "name": "name", "label": "Node name", "description": "Name of the hovered node." },
+            { "name": "value", "label": "Value", "description": "Total throughflow of the node." }
+          ]
+        }
+      ]
+    }
+  },
+  "scopeName": "x_1295779_sankey_0"
+}
