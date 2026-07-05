@@ -1,12 +1,9 @@
 {
   "components": {
-    "x-1295779-sankey-chart-uic": {
+    "x-2114311-sankey-chart-uic": {
       "innerComponents": [],
       "uiBuilder": {
-        "associatedTypes": [
-          "global.core",
-          "global.landing-page"
-        ],
+        "associatedTypes": ["global.core", "global.landing-page"],
         "label": "D3 Sankey Diagram",
         "tileIcon": "./tile-icon/generic-tile-icon.svg",
         "description": "A configurable Sankey flow diagram rendered with D3.js and the d3-sankey plugin. Nodes are bars; links are proportional curved ribbons. Color links by source/target/gradient, align and sort nodes, highlight connected flows on hover, and hook click/hover events.",
@@ -124,9 +121,23 @@
           }
         },
         {
+          "name": "animationStagger",
+          "label": "Animation · Animation stagger (ms)",
+          "description": "Delay between categories for a cascade grow-in (0 = all bars animate together).",
+          "fieldType": "number",
+          "defaultValue": 0
+        },
+        {
           "name": "fontFamily",
           "label": "Display · Base font family",
           "description": "CSS font-family for diagram text that doesn't have its own family set. Blank = inherit from the page.",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        {
+          "name": "hoverColor",
+          "label": "Display · Hover color (when hover highlight on)",
+          "description": "Color a column turns on hover. Blank = automatically brighten the column's own color.",
           "fieldType": "string",
           "defaultValue": ""
         },
@@ -361,6 +372,27 @@
           "defaultValue": false
         },
         {
+          "name": "nodeValueFontSize",
+          "label": "Labels · Value font size (px)",
+          "description": "Font size of the in-node value text, in pixels.",
+          "fieldType": "number",
+          "defaultValue": 9
+        },
+        {
+          "name": "nodeValueColor",
+          "label": "Labels · Value color",
+          "description": "Text color of the in-node value. Default white reads well on the categorical node colors.",
+          "fieldType": "string",
+          "defaultValue": "#ffffff"
+        },
+        {
+          "name": "nodeValueFormat",
+          "label": "Labels · Value format",
+          "description": "Optional d3-format specifier for numeric values, e.g. \",.0f\", \".1f\", \"~s\". Blank = raw value.",
+          "fieldType": "string",
+          "defaultValue": ""
+        },
+        {
           "name": "valueFormat",
           "label": "Labels · Value format",
           "description": "D3 number format specifier for node totals and link tooltip values (e.g. \".0f\", \",.0f\", \"$,.0f\", \".2s\"). Blank = default.",
@@ -416,8 +448,16 @@
           "label": "Chart clicked",
           "description": "Fired when the user clicks the diagram background (not a node or link).",
           "payload": [
-            { "name": "nodeCount", "label": "Number of nodes", "description": "How many nodes are rendered." },
-            { "name": "linkCount", "label": "Number of links", "description": "How many links are rendered." }
+            {
+              "name": "nodeCount",
+              "label": "Number of nodes",
+              "description": "How many nodes are rendered."
+            },
+            {
+              "name": "linkCount",
+              "label": "Number of links",
+              "description": "How many links are rendered."
+            }
           ]
         },
         {
@@ -425,9 +465,21 @@
           "label": "Node clicked",
           "description": "Fired when the user clicks a node bar. Use to drill into that stage.",
           "payload": [
-            { "name": "name", "label": "Node name", "description": "Name of the clicked node." },
-            { "name": "value", "label": "Value", "description": "Total throughflow of the node." },
-            { "name": "index", "label": "Node index", "description": "Zero-based index of the node." }
+            {
+              "name": "name",
+              "label": "Node name",
+              "description": "Name of the clicked node."
+            },
+            {
+              "name": "value",
+              "label": "Value",
+              "description": "Total throughflow of the node."
+            },
+            {
+              "name": "index",
+              "label": "Node index",
+              "description": "Zero-based index of the node."
+            }
           ]
         },
         {
@@ -435,9 +487,21 @@
           "label": "Link clicked",
           "description": "Fired when the user clicks a flow ribbon. Use to drill into that flow.",
           "payload": [
-            { "name": "source", "label": "Source node", "description": "Name of the source node." },
-            { "name": "target", "label": "Target node", "description": "Name of the target node." },
-            { "name": "value", "label": "Value", "description": "Value of the flow." }
+            {
+              "name": "source",
+              "label": "Source node",
+              "description": "Name of the source node."
+            },
+            {
+              "name": "target",
+              "label": "Target node",
+              "description": "Name of the target node."
+            },
+            {
+              "name": "value",
+              "label": "Value",
+              "description": "Value of the flow."
+            }
           ]
         },
         {
@@ -445,12 +509,20 @@
           "label": "Node hovered",
           "description": "Fired when the user hovers a node. Useful for syncing external details panels.",
           "payload": [
-            { "name": "name", "label": "Node name", "description": "Name of the hovered node." },
-            { "name": "value", "label": "Value", "description": "Total throughflow of the node." }
+            {
+              "name": "name",
+              "label": "Node name",
+              "description": "Name of the hovered node."
+            },
+            {
+              "name": "value",
+              "label": "Value",
+              "description": "Total throughflow of the node."
+            }
           ]
         }
       ]
     }
   },
-  "scopeName": "x_1295779_sankey_0"
+  "scopeName": "x_2114311_sankey_0"
 }

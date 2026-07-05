@@ -10,28 +10,28 @@ sibling of the **D3 Line Chart** and **D3 Column Chart** components and mirrors
 their architecture and conventions — but its **data shape is different** (a graph,
 not a series array).
 
-- Component tag: `x-1295779-sankey-chart-uic`  ·  Scope: `x_1295779_sankey_0`
-- Vendor prefix `x_1295779` is shared with the line/column charts (same publisher).
+- Component tag: `x-2114311-sankey-chart-uic` · Scope: `x_2114311_sankey_0`
+- Vendor prefix `x_2114311` is shared with the line/column charts (same publisher).
 
 ## Architecture (important conventions)
 
 - **Seismic + D3 split.** The snabbdom `view` renders only a single stable
   `<div class="sc-root">`. D3 owns the SVG imperatively.
   `drawChart(container, props, dispatch)` in
-  `src/x-1295779-sankey-chart-uic/chart.js` fully re-renders on every property
+  `src/x-2114311-sankey-chart-uic/chart.js` fully re-renders on every property
   change. Never mix snabbdom virtual DOM with D3 mutation on the same nodes.
 - **Lifecycle** (`index.js`): redraw on `COMPONENT_RENDERED` and
   `COMPONENT_PROPERTY_CHANGED`; a `ResizeObserver` (wired in
   `COMPONENT_DOM_READY`) redraws on width changes only, and skips re-animating so
   the grow-in isn't snapped to its end state.
 - **D3 imports must be NAMED submodule imports** (`import { select } from
-  'd3-selection'`), not `import * as d3`. The ServiceNow prod build tree-shakes a
+'d3-selection'`), not `import * as d3`. The ServiceNow prod build tree-shakes a
   passed-around namespace object and would strip methods. Core d3 submodules
   resolve through the `d3` meta-package.
 - **`d3-sankey` is a SEPARATE package** (NOT part of `d3`), declared in
   `package.json` and imported with named imports
   (`import { sankey, sankeyLinkHorizontal, sankeyLeft, sankeyRight, sankeyCenter,
-  sankeyJustify } from 'd3-sankey'`). It must stay in `dependencies`.
+sankeyJustify } from 'd3-sankey'`). It must stay in `dependencies`.
 - **No `d3-transition`.** The grow-in animation grows node rects from their
   vertical center and thickens link strokes from 0 via `requestAnimationFrame`.
   Don't introduce `d3-transition` — it gets tree-shaken out of the prod bundle.
@@ -42,22 +42,22 @@ not a series array).
 
 ## Files
 
-- `src/x-1295779-sankey-chart-uic/index.js` — `createCustomElement`: property
+- `src/x-2114311-sankey-chart-uic/index.js` — `createCustomElement`: property
   defaults + lifecycle. JSON-typed defaults (`data`, `colorPalette`) live here.
-- `src/x-1295779-sankey-chart-uic/chart.js` — the D3 + d3-sankey renderer (the
+- `src/x-2114311-sankey-chart-uic/chart.js` — the D3 + d3-sankey renderer (the
   bulk of the logic). `normalizeGraph()` resolves name/index source/target,
   auto-creates unknown nodes, drops self-loops + zero/negative links; the layout
   call is wrapped in try/catch to handle cyclic graphs gracefully.
-- `src/x-1295779-sankey-chart-uic/sampleData.js` — `SAMPLE_DATA` graph fallback.
-- `src/x-1295779-sankey-chart-uic/styles.scss` — host/container/tooltip styles
+- `src/x-2114311-sankey-chart-uic/sampleData.js` — `SAMPLE_DATA` graph fallback.
+- `src/x-2114311-sankey-chart-uic/styles.scss` — host/container/tooltip styles
   (css prefix `sc`).
 - `now-ui.json` — UI Builder manifest: every property (section-prefixed labels) +
   the `CHART_CLICKED` / `NODE_CLICKED` / `LINK_CLICKED` / `NODE_HOVERED` actions.
   **Keep this in sync with the `properties` block in `index.js` and the prop
   reads in `chart.js`** (the three-places rule).
 - `server/` — platform-side sources (`D3SankeyData.js` Script Include + transform
-  + properties JSON + sanity-test). NOT shipped by `snc ui-component deploy`; they
-  are created as platform records on the instance. See README "Feeding data".
+  - properties JSON + sanity-test). NOT shipped by `snc ui-component deploy`; they
+    are created as platform records on the instance. See README "Feeding data".
 - `scripts/verify_chart.mjs` — headless verification harness (47 scenarios).
 
 ## Data contract — DIFFERS from line/column
@@ -87,6 +87,7 @@ snc ui-component develop --open          # local hot-reload harness (example/ele
 snc ui-component generate-update-set --offline
 snc ui-component deploy                   # push to the connected instance
 ```
+
 Requires the `snc` CLI (`npm i -g @servicenow/cli`) + a configured profile.
 
 ## How to verify changes without an instance
@@ -95,7 +96,7 @@ Requires the `snc` CLI (`npm i -g @servicenow/cli`) + a configured profile.
 headless:
 
 ```bash
-node scripts/verify_chart.mjs --chart src/x-1295779-sankey-chart-uic/chart.js
+node scripts/verify_chart.mjs --chart src/x-2114311-sankey-chart-uic/chart.js
 ```
 
 The harness installs `d3@7 d3-sankey jsdom esbuild` (d3-sankey is NOT in the d3

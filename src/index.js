@@ -1,1 +1,1 @@
-import './x-1295779-sankey-chart-uic';
+import "./x-2114311-sankey-chart-uic";

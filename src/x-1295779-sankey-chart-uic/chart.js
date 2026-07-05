@@ -165,6 +165,7 @@ export function drawChart(container, props, dispatch) {
 	const linkHover = props.linkHover !== false;
 	const hoverHighlight = props.hoverHighlight !== false;
 	const hoverDimOthers = props.hoverDimOthers !== false;
+	const hoverColor = props.hoverColor || '';
 
 	const useSeriesColors = props.useSeriesColors !== false;
 	const colorScheme = props.colorScheme || 'tableau10';
@@ -178,11 +179,14 @@ export function drawChart(container, props, dispatch) {
 	const nodeLabelFontSize = num(props.nodeLabelFontSize, 12);
 	const nodeLabelColor = props.nodeLabelColor || '#374151';
 	const showNodeValues = props.showNodeValues === true;
+	const nodeValueFontSize = Math.max(4, num(props.nodeValueFontSize, 9));
+	const nodeValueColor = props.nodeValueColor || '#ffffff';
 
 	const dropShadow = props.dropShadow === true;
 	const shadowBlur = Math.max(0, num(props.shadowBlur, 4));
 
 	const animationDuration = Math.max(0, num(props.animationDuration, 800));
+	const animationStagger = Math.max(0, num(props.animationStagger, 0));
 	const animate = props.animate !== false && animationDuration > 0;
 	const easeFn = EASINGS[props.animationEasing] || easeCubicOut;
 
@@ -200,6 +204,7 @@ export function drawChart(container, props, dispatch) {
 		try { return format(spec); } catch (e) { return (n) => `${n}`; }
 	};
 	const fmt = makeFmt(props.valueFormat);
+	const valueFmt = isBlank(props.nodeValueFormat) ? fmt : makeFmt(props.nodeValueFormat);
 
 	// ----- clear previous render -----
 	const root = select(container);
@@ -305,6 +310,7 @@ export function drawChart(container, props, dispatch) {
 		const c = color(base);
 		return c ? c.brighter(0.5).toString() : base;
 	};
+	const hoverFill = (base) => (hoverColor ? hoverColor : brighten(base));
 
 	const plot = svg.append('g').attr('transform', `translate(${margin.left},${margin.top})`);
 
@@ -376,7 +382,6 @@ export function drawChart(container, props, dispatch) {
 
 	// ----- node labels -----
 	const midX = innerW / 2;
-	const labelText = (d) => (showNodeValues ? `${d.name} (${fmt(d.value || 0)})` : d.name);
 	let labelSel = null;
 	if (showNodeLabels) {
 		labelSel = plot.append('g').attr('class', 'sc-labels')
@@ -399,7 +404,14 @@ export function drawChart(container, props, dispatch) {
 				if (nodeLabelPosition === 'inside') return 'middle';
 				return (d.x0 < midX) ? 'start' : 'end';
 			})
-			.text(labelText);
+			.text((d) => d.name);
+		if (showNodeValues) {
+			labelSel.append('tspan')
+				.attr('class', 'sc-label-value')
+				.attr('fill', nodeValueColor)
+				.style('font-size', `${nodeValueFontSize}px`)
+				.text((d) => ` (${valueFmt(d.value || 0)})`);
+		}
 	}
 
 	// ----- tooltip -----
@@ -478,7 +490,7 @@ export function drawChart(container, props, dispatch) {
 					if (activeNodes.indexOf(other) === -1) activeNodes.push(other);
 				});
 				dimAll(activeLinks, activeNodes);
-				if (hoverHighlight) select(this).attr('fill', brighten(d._color));
+				if (hoverHighlight) select(this).attr('fill', hoverFill(d._color));
 			}
 			if (tooltipEl) {
 				tooltipEl.html(renderNodeTooltip(d)).style('display', 'block').style('opacity', 1);
@@ -501,7 +513,7 @@ export function drawChart(container, props, dispatch) {
 				dimAll([l], activeNodes);
 				select(this).attr('stroke-opacity', linkHoverOpacity);
 				if (linkHover) {
-					nodeSel.attr('fill', (n) => (n === l.source || n === l.target ? brighten(n._color) : n._color));
+					nodeSel.attr('fill', (n) => (n === l.source || n === l.target ? hoverFill(n._color) : n._color));
 				}
 			}
 			if (tooltipEl) {
@@ -536,15 +548,18 @@ export function drawChart(container, props, dispatch) {
 		// snapshot full geometry
 		const nodeGeom = nodes.map((d) => ({ cy: (d.y0 + d.y1) / 2, h: Math.max(0, d.y1 - d.y0), y0: d.y0 }));
 		const linkFull = links.map((l) => Math.max(1, l.width));
+		const maxDelay = animationStagger * Math.max(0, Math.max(nodes.length, links.length) - 1);
+		const kAt = (elapsed, i) => easeFn(Math.max(0, Math.min(1, (elapsed - animationStagger * i) / animationDuration)));
 		nodeSel.attr('y', (d, i) => nodeGeom[i].cy).attr('height', 0);
 		linkSel.attr('stroke-width', 0).attr('stroke-opacity', 0);
 		if (labelSel) labelSel.style('opacity', 0);
 		const tick = () => {
-			const k = easeFn(Math.max(0, Math.min(1, (now() - t0) / animationDuration)));
-			nodeSel.attr('y', (d, i) => nodeGeom[i].cy - (nodeGeom[i].h * k) / 2)
-				.attr('height', (d, i) => nodeGeom[i].h * k);
-			linkSel.attr('stroke-width', (l, i) => linkFull[i] * k).attr('stroke-opacity', linkOpacity * k);
-			if (now() - t0 < animationDuration) requestAnimationFrame(tick);
+			const elapsed = now() - t0;
+			nodeSel.attr('y', (d, i) => nodeGeom[i].cy - (nodeGeom[i].h * kAt(elapsed, i)) / 2)
+				.attr('height', (d, i) => nodeGeom[i].h * kAt(elapsed, i));
+			linkSel.attr('stroke-width', (l, i) => linkFull[i] * kAt(elapsed, i))
+				.attr('stroke-opacity', (l, i) => linkOpacity * kAt(elapsed, i));
+			if (elapsed < animationDuration + maxDelay) requestAnimationFrame(tick);
 			else {
 				nodeSel.attr('y', (d, i) => nodeGeom[i].y0).attr('height', (d, i) => nodeGeom[i].h);
 				linkSel.attr('stroke-width', (l, i) => linkFull[i]).attr('stroke-opacity', linkOpacity);
@@ -553,7 +568,7 @@ export function drawChart(container, props, dispatch) {
 		};
 		requestAnimationFrame(tick);
 		if (labelSel) {
-			labelSel.style('transition', `opacity 300ms ease ${Math.round(animationDuration * 0.6)}ms`);
+			labelSel.style('transition', `opacity 300ms ease ${Math.round((animationDuration + maxDelay) * 0.6)}ms`);
 			requestAnimationFrame(() => labelSel.style('opacity', 1));
 		}
 	}
